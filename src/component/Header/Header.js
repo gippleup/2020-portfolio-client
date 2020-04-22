@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import MenuBtn from './MenuBtn'
 import anime from 'animejs'
+import HeaderContents from './HeaderContents/index'
 
 export class Headers extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ export class Headers extends Component {
   get style() {
     return {
       zIndex: '100',
-      backgroundColor: 'lightYellow',
+      backgroundColor: 'purple',
       height: '200px',
       position: 'fixed',
       width: '100%',
@@ -69,10 +70,22 @@ export class Headers extends Component {
       <>
       <MenuBtn toggle={this.toggle}/>
       <div ref={this.header} style={this.style}>
-        <div style={{position: 'absolute', height:'50%', width:'100%', bottom:0, backgroundColor:'purple'}}>Put header contents here.
-          <button style={{width:'64px', height:'64px', borderRadius:'32px', border:'none', outline:'none'}}>
-            <img style={{width:'100%', borderRadius:'50%'}} alt="github" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"/>
-          </button>        
+        <div 
+        style={{
+          position: 'absolute', 
+          bottom:0,
+          width:'100%', 
+          height:'50%', 
+          display:'flex',
+          flexDirection: 'row-reverse',
+          gridTemplateColumns: Array.from(HeaderContents.length).fill('auto').join(' '),
+          padding:'15px',
+          textAlign: 'right',
+          alignContent: 'center',
+          backgroundColor:'purple'}}>
+            {HeaderContents.map((Content,i) => 
+            <div style={{width:'fit-content'}} key={i}><Content/></div>
+            )}
         </div>
       </div>
       </>

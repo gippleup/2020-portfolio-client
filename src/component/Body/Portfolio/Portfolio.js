@@ -17,17 +17,10 @@ export class Portfolio extends Component {
     })
   }
 
-  get style() {
-    return {
-      backgroundColor: 'rgba(143,214,23,0.3',
-      paddingBottom: '200px'
-    }
-  }
-
   render() {
     return (
       <>
-        <PortfolioMenu updateSelect={this.updateSelect}/>
+        <PortfolioMenu selected={this.state.selected} updateSelect={this.updateSelect}/>
         <Tabs selected={this.state.selected}/>
       </>
     )

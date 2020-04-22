@@ -14,14 +14,25 @@ export class FakeMessage extends Component {
     }
   }
 
+  selectiveRedner(target, substitute = <></>) {
+    let prevMessage = this.props.prevMessage
+    if (!prevMessage) {
+      return target
+    } else if (prevMessage.type === 'send') {
+      return target
+    } else {
+      return substitute
+    }
+  }
+
   render() {
     if (this.props.type === 'receive') {
       return (
         <div style={this.divStyle}>
           <div style={{display:'grid', gridTemplateColumns: `64px auto`}}>
-            <ProfilePic src={this.props.profile}/>
+            {this.selectiveRedner(<ProfilePic src={this.props.profile}/>, <div></div>)}
             <div style={{display:'grid', gridTemplateRows: `${this.props.name ? '64px' : '0px'} fit-content`}}>
-              <p style={{marginLeft:'10px', marginBottom: '0px'}}>{this.props.name}</p>
+              {this.selectiveRedner(<p style={{marginLeft:'10px', marginBottom: '0px'}}>{this.props.name}</p>)}
               <Message text={this.props.text}/>
             </div>
           </div>

@@ -1,23 +1,10 @@
 import React, { Component } from 'react'
-import { Jumbotron } from 'react-bootstrap'
 import anime from 'animejs'
 
 export class Tab extends Component {
   constructor(props) {
     super(props);
     this.container = React.createRef();  
-  }
-
-
-  get style() {
-    return {
-      backgroundColor: 'grey',
-      paddingTop: '100px',
-      paddingBottom: '100px',
-      width: '100%',
-      marginBottom: 0,
-      color: 'white',
-    }
   }
 
   componentDidMount() {
@@ -43,9 +30,18 @@ export class Tab extends Component {
 
   render() {
     return (
-      <Jumbotron ref={this.container} style={this.style}>
+      <div 
+      ref={this.container} 
+      style={{
+        backgroundColor: 'grey',
+        paddingTop: '100px',
+        paddingBottom: '100px',
+        width: '100%',
+        marginBottom: 0,
+        color: 'white',
+      }}>
         {this.props.content}
-      </Jumbotron>
+      </div>
     )
   }
 }

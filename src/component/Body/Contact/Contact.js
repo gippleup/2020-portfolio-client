@@ -3,7 +3,7 @@ import FakeTalk from './FakeTalk/FakeTalk'
 
 export class Contact extends Component {
 
-  get divStyle() {
+  get containerStyle() {
     return {
       height: 'fit-content',
       paddingRight: 0,
@@ -15,13 +15,14 @@ export class Contact extends Component {
 
   render() {
     return (
-      <div style={this.divStyle}>
+      <div style={this.containerStyle}>
         <h3 
         style={{
           backgroundColor: 'pink',
           width: 'fit-content',
           marginLeft: 'auto',
           marginRight: 'auto',
+          marginBottom: '20px',
           paddingRight: '30px',
           paddingLeft: '30px',
           paddingTop: '10px',

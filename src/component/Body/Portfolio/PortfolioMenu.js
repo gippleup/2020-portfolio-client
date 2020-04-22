@@ -1,56 +1,63 @@
 import React, { Component } from 'react'
-import {Button, Row, Col} from 'react-bootstrap'
+import btnData from './btnData'
+import anime from 'animejs'
+
 
 export class PortfolioMenu extends Component {
   constructor(props) {
     super(props);
     this.addButton = this.addButton.bind(this);
+    this.btnAnimeOnDeselect = this.btnAnimeOnDeselect.bind(this);
+    this.btnAnimeOnSelect = this.btnAnimeOnSelect.bind(this);
+    this.container = React.createRef();
   }
 
-  get buttons() {
-    return [{
-        name: 'All',
-        link: '/all'
-      },
-      {
-        name: 'Hobby',
-        link: '/hobby',
-      },
-      {
-        name: 'Collaboration',
-        link: '/collaboration'
-      },
-      {
-        name: 'Work',
-        link: '/work'
-      }
-    ]
+  componentDidUpdate() {
+    let btns = this.container.current.querySelectorAll('button')
+    Array.from(btns).forEach((btn) => {
+      btn.textContent === this.props.selected ? 
+        this.btnAnimeOnSelect(btn) : this.btnAnimeOnDeselect(btn)
+    })
   }
 
-  get btnStyle() {
-    return {
-      marginRight: '5px',
-    }
+  btnAnimeOnSelect(btn) {
+    anime.remove(btn);
+    anime({
+      targets: btn,
+      backgroundColor: '#ffffff'
+    })
+  }
+
+  btnAnimeOnDeselect(btn) {
+    anime.remove(btn);
+    anime({
+      targets: btn,
+      backgroundColor: '#dddddd'
+    })
   }
 
   addButton({name, link}) {
     return (
-      <Col key={name} style={{padding: 0}}>
-        <Button block
+      <div key={name}
+      style={{width:'100%', height:'60px'}}>
+        <button
         key={name}
         onClick={this.props.updateSelect.bind(null, name)}
-        style={this.btnStyle}>{name}</Button>
-      </Col>
+        style={{
+          width: '100%',
+          height: '100%',
+          border: '0px',
+          outline: 'none',
+          backgroundColor: '#dddddd'
+        }}>{name}</button>
+      </div>
     )
   }
 
   render() {
-    
     return (
-      <div>
-        <Row style={{margin:0}}>
-          {this.buttons.map((b) => this.addButton(b, null))}
-        </Row>
+      <div ref={this.container} style={{display:'flex', flexWrap:'nowrap', margin:0}}>
+        {btnData.map((b) => this.addButton(b, null))}
       </div>
     )
   }

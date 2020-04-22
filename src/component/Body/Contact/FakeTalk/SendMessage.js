@@ -97,14 +97,17 @@ export class SendMessage extends Component {
   }
 
   sendMessage() {
-    if (!this.state.curMessage) {return}
-    this.props.send({
-      name: 'michael',
-      text: this.state.curMessage,
-      profile: '',
-      type: 'send',
-    })
-    this.clearSentMessage();
+    if (!this.state.curMessage) {
+      return
+    } else {
+      this.props.sendMessage({
+        name: 'client',
+        text: this.state.curMessage,
+        profile: '',
+        type: 'send',
+      })
+      this.clearSentMessage();
+    }
   }
 
   render() {
