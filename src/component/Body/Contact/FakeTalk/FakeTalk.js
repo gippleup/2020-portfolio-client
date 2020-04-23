@@ -14,7 +14,7 @@ export function FakeTalk() {
   const [recentlyReceived, setRecentlyReceived] = useStateWithLabel(null, 'recentlyReceived');
   const [emailReceived, setEmailReceived] = useStateWithLabel([], 'emailReceived');
   const [clientMessages, setClientMessages] = useStateWithLabel([], 'clientMessages');
-  const [emailCaution, setEmailCaution] = useStateWithLabel(false, 'emailCaution');
+  const [emailCaution, setEmailCaution] = useStateWithLabel(true, 'emailCaution');
   const [hasResponded, setHasResponded] = useStateWithLabel(true, 'hasResponded');
   const [waitingResponse, setWaiting] = useStateWithLabel([],'waitingResponse')
 
@@ -74,10 +74,7 @@ export function FakeTalk() {
       borderRadius: '20px',
       boxShadow: '0 5px 10px rgba(0,0,0,0.2)',
     }}>
-      {selectiveRender(
-        <ContactSealer emailReceived={emailReceived}/>
-        )
-      }
+      {selectiveRender(<ContactSealer emailReceived={emailReceived}/>)}
       <ContactMain
       setHasResponded={setHasResponded}
       addToWaitingResponse={addToWaitingResponse}
