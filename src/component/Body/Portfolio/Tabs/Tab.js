@@ -9,7 +9,7 @@ export class Tab extends Component {
 
   componentDidMount() {
     let t = this.container.current
-    let width = t.clientWidth
+    // let width = t.clientWidth
     let height = t.clientHeight
     anime({
       targets: t,

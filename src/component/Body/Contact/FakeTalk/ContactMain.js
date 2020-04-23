@@ -1,30 +1,31 @@
 import React, { useEffect } from 'react'
 import SendMessage from './SendMessage'
 import FakeMessage from './FakeMessage'
-import img from './profilePic.jpeg';
-
-const myName = 'Michael'
-
-const initialMessage = {
-  type: 'receive',
-  name: myName,
-  profile: img,
-  text: 'Hello there!'
-}
+import {img, myName} from './dummyMessage'
+import anime from 'animejs'
 
 export default function ContactMain(props) {
   const messageDiv = React.createRef();
   let sendHeight = 76
 
-  if(!props.hasResponded) {
-    respondToMessage(props.recentlyReceived);
-  }
+  useEffect(() => {
+    if(!props.hasResponded) {
+      props.setHasResponded(true)
+      respondToMessage(props.recentlyReceived);
+    }
+    scrollToBottom();
+  })
   
   function scrollToBottom() {
-    // console.log(props.messages)
-    // console.log(messageDiv.current)
-    // let msgDiv = messageDiv.current;
-    // msgDiv.scrollTop = msgDiv.scrollHeight;
+    let msgDiv = messageDiv.current;
+    if (msgDiv.scrollHeight < msgDiv.clientHeight) return
+    anime.remove(msgDiv);
+    anime({
+      targets: msgDiv,
+      scrollTop: msgDiv.scrollHeight - 600,
+      duration: 1000,
+      easing: 'easeOutCubic'
+    })
   }
 
   function renderMessages() {
@@ -46,58 +47,55 @@ export default function ContactMain(props) {
 
   function respondToMessage(message) {
     if (message.type !== 'send') return
-    props.collectClientMessage(message)
-
-    let msgTemplate = {
+    let makeWaitingMsg = (text, waitTime) => 
+    Object.assign({}, {
       type: 'receive',
       profile: img,
       name: myName,
-    }
-    
-    let makeMessage = (text) => Object.assign(msgTemplate, {text})
-    let send = (text) => sendMessage(makeMessage(text))
-    let slowSend = (text) => setTimeout(() => {send(text)}, 500)
-    
+      text,
+      waitTime
+    })
     let recentMessage = message.text;
-    let emailSearcher = RegExp(/\s?^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\s?/g)
+    let emailSearcher = RegExp(/\s?^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))\s?/g)
     let email = recentMessage ? recentMessage.match(emailSearcher) : undefined
     
-    respondToEmail(email, send, slowSend)
+    respondToEmail(email, makeWaitingMsg)
   }
 
-  function respondToEmail(email, send, slowSend) {
+  function respondToEmail(email, makeWaitingMsg) {
+    let queue = [];
     let text;
     let slowText;
     let alreadyGotEmail = props.emailReceived[0] !== undefined
     let newlyGotEmail = email !== null
-    if (!alreadyGotEmail) {
-      if (newlyGotEmail) {
-        send(`email: "${email}" has been received`);
-        text = `I will contact you soon!`
-        props.addEmail(email);
-      } else {
-        text = 'If you want to contact me, please leave your email'
-        slowText = 'Just type it like this: id@email.com'
-      }
-    } else {
-      if (newlyGotEmail) {
-        send(`email: "${email}" has been received`)
+    if (newlyGotEmail) {
+      let msg = `email: "${email}" has been received`;
+      queue.push(makeWaitingMsg(msg, 100))
+      props.addEmail(email);
+      if (alreadyGotEmail) {
+        props.cautionEmail();
         text = `Hmm, it seems like you've sent email already`
         slowText = `Please choose your main email`
-        props.cautionEmail();
-      } else {
-        text = 'This is dummy text';
       }
+    } else if (!alreadyGotEmail) {
+      text = 'If you want to contact me, please leave your email'
+      slowText = 'Just type it like this: id@email.com'
+    } else {
+      text = 'This is dummy text';
     }
 
-    if (text) send(text)
-    if (slowText) slowSend(slowText);
+    if (text) {
+      queue.push(makeWaitingMsg(text, 100))
+    }
+    if (slowText) {
+      queue.push(makeWaitingMsg(slowText, 500))
+    }
+    props.addToWaitingResponse(queue)
     return;
   }
 
   return (
     <div 
-    id='contact-main'
     style={{
       display: 'grid',
       gridTemplateRows: `600px 10px ${sendHeight}px`,}}>
@@ -110,7 +108,6 @@ export default function ContactMain(props) {
       <SendMessage 
       sendMessage={(message)=>{
         sendMessage(message)
-        scrollToBottom();
       }}
       height={sendHeight}/>
     </div>

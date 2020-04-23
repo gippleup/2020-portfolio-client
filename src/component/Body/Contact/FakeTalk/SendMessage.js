@@ -8,18 +8,6 @@ export function SendMessage(props) {
   const textarea = React.createRef();
 
   const animations = {
-    textOnEnter(e) {
-      if (e.keyCode === 13) {
-        e.target.disabled = true;
-        sendMessage();
-        animations.textOnFocusOut();
-        animations.sendBtnOnClick();
-        clearSentMessage();
-        setTimeout(() => {
-          e.target.disabled = false
-        }, 100)
-      }
-    },
     textOnFocus() {
       let target = textarea.current;
       anime.remove(target);
@@ -44,11 +32,27 @@ export function SendMessage(props) {
     },
     sendBtnOnClick() {
       let target = sendBtn.current
+      animations.textOnFocusOut();
+      anime.remove(target);
       anime({
         targets: target,
         backgroundColor: ['#ffbb00', '#ffebb3'],
         duration: 2000,
       })
+    }
+  }
+
+  function textOnEnter(e) {
+    if (e.keyCode === 13) {
+      let target = e.target;
+      target.disabled = true;
+      sendMessage();
+      animations.textOnFocusOut();
+      animations.sendBtnOnClick();
+      clearSentMessage();
+      setTimeout(() => {
+        target.disabled = false
+      }, 100)
     }
   }
 
@@ -88,6 +92,7 @@ export function SendMessage(props) {
         value={curMessage}
         onChange={type}
         onFocus={animations.textOnFocus}
+        onKeyDown={textOnEnter}
         ref={textarea} 
         style={{
           padding: '20px',
