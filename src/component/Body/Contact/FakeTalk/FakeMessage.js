@@ -45,7 +45,7 @@ export class FakeMessage extends Component {
         <div style={{
           textAlign: 'right', 
           marginBottom: '10px', 
-          marginTop: this.props.prevMessage.type === 'receive' ? '16px' : 0
+          marginTop: this.props.prevMessage ? this.props.prevMessage.type === 'receive' ? '16px' : 0 : '16px'
         }}>
           <Message type={this.props.type} text={this.props.text}/>
         </div>
